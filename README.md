@@ -1,2 +1,2 @@
-# ethereum-classic-taxman
-Ethereum (classic) taxman - Scan blockchain for accounting / tax purposes
+# ethereum-taxman
+Program to generate documents suitable for tax calculation

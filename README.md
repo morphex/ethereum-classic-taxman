@@ -1,4 +1,5 @@
-# ethereum-taxman
+Ethereum (classic) taxman
+
 Program to generate documents suitable for accounting / tax purposes, for
 funds received and sent from Ethereum and Ethereum classic addresses.
 

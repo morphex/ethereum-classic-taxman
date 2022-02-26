@@ -9,7 +9,6 @@ main_account = ''
 receivers = []
 receivers_data = {}
 
-print(transactions)
 for block, transaction in transactions:
     if not main_account:
         main_account = transaction['to']

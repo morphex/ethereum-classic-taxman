@@ -26,6 +26,7 @@ def initialize_transactions():
     except Exception as exception:
         print("Uknown error in initialization of transactions database")
         dump_exception(exception)
+        raise
 
 def save_transactions(index, transactions):
     print("Saving..")
@@ -52,6 +53,7 @@ def initialize_blocks():
     except Exception as exception:
         print("Uknown error in initialization of blocks database")
         dump_exception(exception)
+        raise
 
 def save_blocks(numbers, blocks):
     print("Saving..")

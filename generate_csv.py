@@ -14,7 +14,7 @@ for block, transaction in transactions[1]:
         receivers.append(to)
         receivers_data[to] = []
     receivers_data[to].append((transaction['from'], transaction['to'], transaction['value'],
-				transaction['gas'], transaction['gasPrice']))
+				transaction['gas'], transaction['gasPrice'], block))
 
 for receiver in receivers:
     file = open(receiver+'.csv', 'w')

@@ -1,12 +1,16 @@
 #!/usr/bin/python3
 
-import pickle
+from database import initialize_transactions, initialize_blocks
 
-transactions = pickle.load(open("transactions.p", "rb"))
+index, transactions = initialize_transactions()
+numbers, blocks = initialize_blocks()
+
 main_account = ''
 receivers = []
 receivers_data = {}
-for block, transaction in transactions[1]:
+
+print(transactions)
+for block, transaction in transactions:
     if not main_account:
         main_account = transaction['to']
     to = transaction['to']
@@ -14,7 +18,7 @@ for block, transaction in transactions[1]:
         receivers.append(to)
         receivers_data[to] = []
     receivers_data[to].append((transaction['from'], transaction['to'], transaction['value'],
-				transaction['gas'], transaction['gasPrice'], block))
+				transaction['gas'], transaction['gasPrice'], block, blocks[block]['timestamp']))
 
 for receiver in receivers:
     file = open(receiver+'.csv', 'w')

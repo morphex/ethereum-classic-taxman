@@ -22,7 +22,7 @@ def initialize_transactions():
         return last_block_index, transactions
     except FileNotFoundError:
         _create_transactions_database()
-        initialize_transactions()
+        return initialize_transactions()
     except Exception as exception:
         print("Uknown error in initialization of transactions database")
         dump_exception(exception)
@@ -49,7 +49,7 @@ def initialize_blocks():
         return numbers, blocks
     except FileNotFoundError:
         _create_blocks_database()
-        initialize_blocks()
+        return initialize_blocks()
     except Exception as exception:
         print("Uknown error in initialization of blocks database")
         dump_exception(exception)

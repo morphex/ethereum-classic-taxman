@@ -1,30 +1,20 @@
 #!/usr/bin/python3
 
-from web3 import Web3, WebsocketProvider
 import time
 import pickle
 import sys
+from connection import w3
+from utilities import dump_exception
 
 database = "transactions.p"
 
 last_block_index = 0
 transactions = []
 
-def _initialize():
-    pickle.dump((last_block_index, transactions), open(database, "wb"))
+from database import initialize_transactions, save_transactions
 
-def initialize():
-    try:
-        f = open(database, "rb")
-        global transactions, last_block_index
-        last_block_index, transactions = pickle.load(f)
-    except OSError:
-        _initialize()
-        initialize()
+last_block_index, transactions = initialize_transactions()
 
-initialize()
-
-w3 = Web3(WebsocketProvider('ws://localhost:8546'))
 my_address = sys.argv[1]
 index = 0
 
@@ -43,9 +33,6 @@ else:
         print("Saved work does not match CLI argument")
         sys.exit(1)
     index = last_block_index
-
-#latest = w3.eth.get_block("latest")
-#print ("Latest Ethereum block" , latest)
 
 start = time.time()
 
@@ -70,11 +57,9 @@ try:
             print(count, block_, time_used, count / time_used)
 except KeyboardInterrupt:
     print("Stopping dump of transactions")
-except:
-    raise
+except Exception as exception:
+    #raise
     print("Stopping dump of transactions")
-    print("Stopping dump, unknown error")
+    dump_exception(exception)
 
-print("Saving..")
-
-pickle.dump((index, transactions), open("transactions.p", "wb"))
+save_transactions(index, transactions)

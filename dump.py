@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 
-import pickle
+import database
 
-transactions = pickle.load(open("transactions.p", "rb"))
-print(len(transactions[1]))
-print(transactions)
+index, transactions = database.initialize_transactions()
+numbers, blocks = database.initialize_blocks()
+
+print(numbers, blocks)

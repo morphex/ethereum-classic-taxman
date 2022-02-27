@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import sys
-import datetime, time
+import datetime, time, pytz
 from database import initialize_transactions, initialize_blocks
 
 index, transactions = initialize_transactions()
@@ -11,6 +11,7 @@ main_account = ''
 receivers = []
 receivers_data = {}
 
+timezone = pytz.timezone("CET")
 year = 1970
 
 try:
@@ -19,11 +20,17 @@ except IndexError:
     pass
 
 if year == 1970:
-    start = datetime.date(year, 1, 1)
-    end = datetime.datetime.now()
+    start = datetime.datetime(year, 1, 1,
+                              hour=0, minute=0, second=0,
+                              tzinfo=timezone)
+    end = datetime.datetime.now(tz=timezone)
 else:
-    start = datetime.date(year, 1, 1)
-    end = datetime.date(year + 1, 1, 1)
+    start = datetime.date(year, 1, 1,
+                          hour=0, minute=0, second=0,
+                          tzinfo=timezone)
+    end = datetime.date(year + 1, 1, 1,
+                          hour=0, minute=0, second=0,
+                          tzinfo=timezone)
 
 #print(start.timetuple(), end.timetuple())
 

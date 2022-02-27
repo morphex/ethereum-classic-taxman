@@ -33,7 +33,7 @@ def save_transactions(index, transactions):
     # FIXME, rename before save
     pickle.dump((index, transactions), open(transactions_database, "wb"))
 
-initialize_transactions()
+#initialize_transactions()
 
 numbers = []
 blocks = {}
@@ -60,4 +60,4 @@ def save_blocks(numbers, blocks):
     # FIXME, rename before save
     pickle.dump((numbers, blocks), open(blocks_database, "wb"))
 
-initialize_blocks()
+#initialize_blocks()

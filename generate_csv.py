@@ -25,10 +25,10 @@ if year == 1970:
                               tzinfo=timezone)
     end = datetime.datetime.now(tz=timezone)
 else:
-    start = datetime.date(year, 1, 1,
+    start = datetime.datetime(year, 1, 1,
                           hour=0, minute=0, second=0,
                           tzinfo=timezone)
-    end = datetime.date(year + 1, 1, 1,
+    end = datetime.datetime(year + 1, 1, 1,
                           hour=0, minute=0, second=0,
                           tzinfo=timezone)
 

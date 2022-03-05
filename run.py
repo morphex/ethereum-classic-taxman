@@ -54,7 +54,7 @@ try:
                 transactions.append((index, transaction))
                 if index not in block_numbers:
                     block_numbers.append(index)
-                    blocks[index] = block
+                    blocks[str(index)] = block
         if stop: break
         index += 1
         count += 1

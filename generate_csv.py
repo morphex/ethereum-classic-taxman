@@ -43,7 +43,7 @@ end = time.mktime(end.timetuple())
 for block, transaction in transactions:
     if not main_account:
         main_account = transaction['to']
-    timestamp = blocks[block]['timestamp']
+    timestamp = blocks[str(block)]['timestamp']
     if timestamp < start or timestamp > end: continue
     to = transaction['to']
     if not to in receivers:

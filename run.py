@@ -20,6 +20,8 @@ my_address = sys.argv[1]
 index = 0
 
 if not last_block_index:
+    #print((last_block_index,))
+    #sys.exit()
     try:
         index = int(sys.argv[2])
     except IndexError:

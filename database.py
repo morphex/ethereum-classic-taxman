@@ -22,6 +22,7 @@ def initialize_transactions():
     try:
         f = open(transactions_database, "r")
         last_block_index, transactions = json.loads(f.read())
+        #return int(last_block_index), transactions
         return last_block_index, transactions
     except FileNotFoundError:
         _create_transactions_database()
@@ -35,7 +36,7 @@ def save_transactions(index, transactions):
     print("Saving transactions..")
     # FIXME, rename before save
     with open(transactions_database, "w") as file:
-        file.write(json.dumps((last_block_index, transactions), cls=jsonencoder))
+        file.write(json.dumps((index, transactions), cls=jsonencoder))
 
 #initialize_transactions()
 
@@ -51,6 +52,7 @@ def initialize_blocks():
     try:
         f = open(blocks_database, "r")
         numbers, blocks = json.loads(f.read())
+        #numbers = list(map(lambda x: int(x), numbers))
         return numbers, blocks
     except FileNotFoundError:
         _create_blocks_database()
@@ -80,6 +82,8 @@ def initialize_rates():
     try:
         f = open(rates_database, "r")
         rates = json.loads(f.read())
+        #for key, value in rates.items():
+        #    rates[key] = tuple(map(float, value))
         return rates
     except FileNotFoundError:
         _create_rates_database()

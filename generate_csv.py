@@ -8,12 +8,13 @@ index, transactions = initialize_transactions()
 numbers, blocks = initialize_blocks()
 rates = initialize_rates()
 
+BLOCK_TIMESTAMP_TIMEZONE = pytz.timezone("UTC")
+
 main_account = ''
 receivers = []
 receivers_data = {}
 
 accounting_timezone = pytz.timezone("CET")
-block_timestamp_timezone = pytz.timezone("UTC")
 year = 1970
 
 try:
@@ -49,7 +50,7 @@ for block, transaction in transactions:
     if not to in receivers:
         receivers.append(to)
         receivers_data[to] = []
-    timestamp_datetime = datetime.datetime.fromtimestamp(timestamp, tz=block_timestamp_timezone).astimezone(accounting_timezone)
+    timestamp_datetime = datetime.datetime.fromtimestamp(timestamp, tz=BLOCK_TIMESTAMP_TIMEZONE).astimezone(accounting_timezone)
     timestamp_date = str(timestamp_datetime.date())
     timestamp_time = str(timestamp_datetime.time())
     try:

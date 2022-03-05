@@ -58,6 +58,7 @@ def initialize_blocks():
 
 def save_blocks(numbers, blocks):
     print("Saving blocks..")
+    numbers.sort()
     # FIXME, rename before save
     pickle.dump((numbers, blocks), open(blocks_database, "wb"))
 

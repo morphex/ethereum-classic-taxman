@@ -131,6 +131,7 @@ dmypy.json
 # ethereum-taxman data/private files
 *.p
 *.csv
+*.json
 
 # misc backup files
 *~

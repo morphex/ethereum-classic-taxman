@@ -1,27 +1,25 @@
 #!/usr/bin/python3
 
 import time
-import json
+import pickle
 import sys
 from connection import w3
 from utilities import dump_exception
-from web3._utils.encoding import Web3JsonEncoder as jsonencoder
 
-transactions_database = "transactions.json"
-blocks_database = "blocks.json"
-rates_database = "rates.json"
+transactions_database = "transactions.p"
+blocks_database = "blocks.p"
+rates_database = "rates.p"
 
 last_block_index = 0
 transactions = []
 
 def _create_transactions_database():
-    with open(transactions_database, "w") as file:
-        file.write(json.dumps((last_block_index, transactions), cls=jsonencoder))
+    pickle.dump((last_block_index, transactions), open(transactions_database, "wb"))
 
 def initialize_transactions():
     try:
-        f = open(transactions_database, "r")
-        last_block_index, transactions = json.loads(f.read())
+        f = open(transactions_database, "rb")
+        last_block_index, transactions = pickle.load(f)
         return last_block_index, transactions
     except FileNotFoundError:
         _create_transactions_database()
@@ -34,8 +32,7 @@ def initialize_transactions():
 def save_transactions(index, transactions):
     print("Saving transactions..")
     # FIXME, rename before save
-    with open(transactions_database, "w") as file:
-        file.write(json.dumps((last_block_index, transactions), cls=jsonencoder))
+    pickle.dump((index, transactions), open(transactions_database, "wb"))
 
 #initialize_transactions()
 
@@ -44,13 +41,12 @@ blocks = {}
 
 def _create_blocks_database():
     global numbers, blocks
-    with open(blocks_database, "w") as file:
-        file.write(json.dumps((numbers, blocks), cls=jsonencoder))
+    pickle.dump((numbers, blocks), open(blocks_database, "wb"))
 
 def initialize_blocks():
     try:
-        f = open(blocks_database, "r")
-        numbers, blocks = json.loads(f.read())
+        f = open(blocks_database, "rb")
+        numbers, blocks = pickle.load(f)
         return numbers, blocks
     except FileNotFoundError:
         _create_blocks_database()
@@ -64,8 +60,7 @@ def save_blocks(numbers, blocks):
     print("Saving blocks..")
     numbers.sort()
     # FIXME, rename before save
-    with open(blocks_database, "w") as file:
-        file.write(json.dumps((numbers, blocks), cls=jsonencoder))
+    pickle.dump((numbers, blocks), open(blocks_database, "wb"))
 
 #initialize_blocks()
 
@@ -73,13 +68,12 @@ rates = {}
 
 def _create_rates_database():
     global rates
-    with open(rates_database, "w") as file:
-        file.write(json.dumps(rates, cls=jsonencoder))
+    pickle.dump(rates, open(rates_database, "wb"))
 
 def initialize_rates():
     try:
-        f = open(rates_database, "r")
-        rates = json.loads(f.read())
+        f = open(rates_database, "rb")
+        rates = pickle.load(f)
         return rates
     except FileNotFoundError:
         _create_rates_database()
@@ -92,5 +86,4 @@ def initialize_rates():
 def save_rates(rates):
     print("Saving rates..")
     # FIXME, rename before save
-    with open(rates_database, "w") as file:
-        file.write(json.dumps(rates, cls=jsonencoder))
+    pickle.dump(rates, open(rates_database, "wb"))

@@ -11,9 +11,10 @@ database = "transactions.p"
 last_block_index = 0
 transactions = []
 
-from database import initialize_transactions, save_transactions
+from database import initialize_transactions, save_transactions, initialize_blocks, save_blocks
 
 last_block_index, transactions = initialize_transactions()
+block_numbers, blocks = initialize_blocks()
 
 my_address = sys.argv[1]
 index = 0
@@ -49,6 +50,9 @@ try:
                transaction['from'] == my_address:
                 print("Eureka!", index, block_ )
                 transactions.append((index, transaction))
+                if index not in block_numbers:
+                    block_numbers.append(index)
+                    blocks[index] = block
         if stop: break
         index += 1
         count += 1
@@ -63,3 +67,4 @@ except Exception as exception:
     dump_exception(exception)
 
 save_transactions(index, transactions)
+save_blocks(block_numbers, blocks)

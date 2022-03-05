@@ -43,7 +43,7 @@ count = 0
 try:
     while True :
         block_ = hex(index)
-
+        #print(index, block_)
         block = w3.eth.get_block(block_, full_transactions=True)
         for transaction in block['transactions']:
             if transaction['to'] == my_address or \

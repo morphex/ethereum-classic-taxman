@@ -8,6 +8,7 @@ from utilities import dump_exception
 
 transactions_database = "transactions.p"
 blocks_database = "blocks.p"
+rates_database = "rates.p"
 
 last_block_index = 0
 transactions = []
@@ -29,7 +30,7 @@ def initialize_transactions():
         raise
 
 def save_transactions(index, transactions):
-    print("Saving..")
+    print("Saving transactions..")
     # FIXME, rename before save
     pickle.dump((index, transactions), open(transactions_database, "wb"))
 
@@ -56,8 +57,32 @@ def initialize_blocks():
         raise
 
 def save_blocks(numbers, blocks):
-    print("Saving..")
+    print("Saving blocks..")
     # FIXME, rename before save
     pickle.dump((numbers, blocks), open(blocks_database, "wb"))
 
 #initialize_blocks()
+
+rates = {}
+
+def _create_rates_database():
+    global rates
+    pickle.dump(rates, open(rates_database, "wb"))
+
+def initialize_rates():
+    try:
+        f = open(rates_database, "rb")
+        rates = pickle.load(f)
+        return rates
+    except FileNotFoundError:
+        _create_rates_database()
+        return initialize_rates()
+    except Exception as exception:
+        print("Uknown error in initialization of rates database")
+        dump_exception(exception)
+        raise
+
+def save_rates(rates):
+    print("Saving rates..")
+    # FIXME, rename before save
+    pickle.dump(rates, open(rates_database, "wb"))

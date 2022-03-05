@@ -2,16 +2,18 @@
 
 import sys
 import datetime, time, pytz
-from database import initialize_transactions, initialize_blocks
+from database import initialize_transactions, initialize_blocks, initialize_rates
 
 index, transactions = initialize_transactions()
 numbers, blocks = initialize_blocks()
+rates = initialize_rates()
 
 main_account = ''
 receivers = []
 receivers_data = {}
 
-timezone = pytz.timezone("CET")
+accounting_timezone = pytz.timezone("CET")
+block_timestamp_timezone = pytz.timezone("UTC")
 year = 1970
 
 try:
@@ -22,15 +24,15 @@ except IndexError:
 if year == 1970:
     start = datetime.datetime(year, 1, 1,
                               hour=0, minute=0, second=0,
-                              tzinfo=timezone)
-    end = datetime.datetime.now(tz=timezone)
+                              tzinfo=accounting_timezone)
+    end = datetime.datetime.now(tz=accounting_timezone)
 else:
     start = datetime.datetime(year, 1, 1,
                           hour=0, minute=0, second=0,
-                          tzinfo=timezone)
+                          tzinfo=accounting_timezone)
     end = datetime.datetime(year + 1, 1, 1,
                           hour=0, minute=0, second=0,
-                          tzinfo=timezone)
+                          tzinfo=accounting_timezone)
 
 #print(start.timetuple(), end.timetuple())
 
@@ -47,8 +49,16 @@ for block, transaction in transactions:
     if not to in receivers:
         receivers.append(to)
         receivers_data[to] = []
+    timestamp_datetime = datetime.datetime.fromtimestamp(timestamp, tz=block_timestamp_timezone).astimezone(accounting_timezone)
+    timestamp_date = str(timestamp_datetime.date())
+    timestamp_time = str(timestamp_datetime.time())
+    try:
+        rate = rates[timestamp_date][0]
+    except KeyError:
+        rate = -1
     receivers_data[to].append((transaction['from'], transaction['to'], transaction['value'],
-				transaction['gas'], transaction['gasPrice'], block, timestamp))
+				transaction['gas'], transaction['gasPrice'], block, timestamp,
+				timestamp_date, timestamp_time, rate))
 
 for receiver in receivers:
     file = open(receiver+'.csv', 'w')

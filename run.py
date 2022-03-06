@@ -7,6 +7,7 @@ STARTUP_TIME = time.time()
 import sys
 from connection import w3
 from utilities import dump_exception
+import web3.exceptions
 
 last_block_index = 0
 transactions = []
@@ -76,6 +77,9 @@ try:
             print(count, block_, time_used, count / time_used)
         if not index % 50000:
             save_progress()
+except web3.exceptions.BlockNotFound:
+    print("Block %i not found, probably at end of the line" % index)
+    print("Latest block on node is %i" % w3.eth.get_block("latest")['number'])
 except KeyboardInterrupt:
     print("Stopping dump of transactions")
 except Exception as exception:

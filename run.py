@@ -4,7 +4,6 @@ import time
 
 STARTUP_TIME = time.time()
 
-import pickle
 import sys
 from connection import w3
 from utilities import dump_exception
@@ -43,6 +42,12 @@ start = time.time()
 stop = False
 count = 0
 
+def save_progress():
+    print("Saving progress.. ")
+    save_transactions(index, transactions)
+    save_blocks(block_numbers, blocks)
+    print("Done.")
+
 try:
     while True :
         block_ = hex(index)
@@ -62,6 +67,8 @@ try:
         if not index % 100:
             time_used = time.time() - start
             print(count, block_, time_used, count / time_used)
+        if not index % 50000:
+            save_progress()
 except KeyboardInterrupt:
     print("Stopping dump of transactions")
 except Exception as exception:
@@ -69,5 +76,4 @@ except Exception as exception:
     print("Stopping dump of transactions")
     dump_exception(exception)
 
-save_transactions(index, transactions)
-save_blocks(block_numbers, blocks)
+save_progress()

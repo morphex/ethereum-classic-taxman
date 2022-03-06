@@ -132,6 +132,8 @@ dmypy.json
 *.p
 *.csv
 *.json
+./data_backups/*
+*.old
 
 # misc backup files
 *~

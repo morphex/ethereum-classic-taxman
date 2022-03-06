@@ -63,6 +63,8 @@ for block, transaction in transactions:
 
 for receiver in receivers:
     file = open(receiver+'.csv', 'w')
+    file.write(','.join(("From", "To", "Value", "Gas", "Gas price", "Block",
+			"Timestamp", "Timestamp date", "Timestamp time", "Exchange rate")) + "\n")
     for transaction in receivers_data[receiver]:
         file.write(','.join(map(str, transaction)) + '\n')
     file.close()

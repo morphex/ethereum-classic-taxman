@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 
 import time
+
+STARTUP_TIME = time.time()
+
 import pickle
 import sys
 from connection import w3

@@ -9,8 +9,6 @@ import sys
 from connection import w3
 from utilities import dump_exception
 
-database = "transactions.p"
-
 last_block_index = 0
 transactions = []
 

@@ -28,14 +28,21 @@ if not last_block_index:
         pass
 else:
     print("Found saved work")
-    if my_address == transactions[0][1]['to'] or \
-       my_address == transactions[0][1]['from']:
-        print("Saved work matches CLI argument")
-        print("Starting at block %i" % last_block_index)
+    if transactions:
+        if my_address == transactions[0][1]['to'] or \
+           my_address == transactions[0][1]['from']:
+            print("Saved work matches CLI argument")
+            print("Starting at block %i" % last_block_index)
+        else:
+            print("Saved work does not match CLI argument")
+            sys.exit(1)
+        index = last_block_index
     else:
-        print("Saved work does not match CLI argument")
-        sys.exit(1)
-    index = last_block_index
+        try:
+            index = int(sys.argv[2])
+        except IndexError:
+            pass
+
 
 start = time.time()
 

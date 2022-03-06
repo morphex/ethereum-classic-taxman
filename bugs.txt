@@ -1,0 +1,2 @@
+Running run.py with a block not yet present on the local node gives an
+IndexError.

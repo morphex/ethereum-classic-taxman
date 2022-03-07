@@ -24,6 +24,13 @@ Syncmode snap was the only thing that worked in a satisfying manner
 when downloading a copy of the Ethereum database; not many peers
 support light mode.
 
+To test if this works, web3 is required, IIRC it is
+
+  pip3 install web3
+
+And to test against a local ETC node, use the command line above as
+well as runing ./test.sh
+
 If you want to send me a tip, for example if this saved your bacon, I
 have an ETH address
 
@@ -38,7 +45,4 @@ some Python experience and blockchain experience, I also know a bit
 about web development, system administration etc.
 
 morphex@gmail.com is my email address.
-
-
-
 

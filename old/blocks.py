@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+import sys, os
+sys.path.append(os.getcwd())
+
 from connection import w3
 from database import initialize_transactions, initialize_blocks, save_blocks
 

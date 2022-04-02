@@ -1,7 +1,11 @@
 #!/usr/bin/python3
 
+import sys, os
+sys.path.append(os.getcwd())
+
 import database_old
 import json
+
 
 index, transactions = database_old.initialize_transactions()
 numbers, blocks = database_old.initialize_blocks()

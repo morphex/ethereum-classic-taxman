@@ -8,8 +8,9 @@ index, transactions = initialize_transactions()
 numbers, blocks = initialize_blocks()
 rates = initialize_rates()
 
-from decimal import Decimal
+from decimal import Decimal, getcontext
 GWEI_DENOMINATOR = Decimal(1000000000.0)
+csv_format = lambda x: "%.6f" % x
 
 BLOCK_TIMESTAMP_TIMEZONE = pytz.timezone("UTC")
 
@@ -67,9 +68,9 @@ for block, transaction in transactions:
         rate = -1
         gas_price_usd = -1
         value_usd = -1
-    receivers_data[to].append((transaction['from'], transaction['to'], transaction['hash'], value,
-				value_usd, gas_price_eth, gas_price_usd, gas_price_gwei, block,
-				timestamp, timestamp_date, timestamp_time, rate))
+    receivers_data[to].append((transaction['from'], transaction['to'], transaction['hash'], csv_format(value),
+				csv_format(value_usd), csv_format(gas_price_eth), csv_format(gas_price_usd),
+				gas_price_gwei, block,timestamp, timestamp_date, timestamp_time, csv_format(rate)))
 
 for receiver in receivers:
     file = open(receiver+'.csv', 'w')

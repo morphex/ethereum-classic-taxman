@@ -31,6 +31,10 @@ To test if this works, web3 is required, IIRC it is
 And to test against a local ETC node, use the command line above as
 well as runing ./test.sh
 
+The CSV file format I'm using for generating rates is taken from the
+Yahoo ETH-USD and ETC-USD service; it is possible to generate a long
+history of daily rates from them.
+
 If you want to send me a tip, for example if this saved your bacon, I
 have an ETH address
 

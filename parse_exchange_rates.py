@@ -31,7 +31,7 @@ else:
 
 rates = database.initialize_rates()
 
-for row in list(csv.reader(open("../etc-usd.csv")))[start:]:
+for row in list(csv.reader(open("../ETH-USD.csv")))[start:]:
     date = row[date_index]
     high = float(row[high_index])
     low = float(row[low_index])

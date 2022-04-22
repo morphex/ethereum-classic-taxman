@@ -8,8 +8,9 @@ index, transactions = initialize_transactions()
 numbers, blocks = initialize_blocks()
 rates = initialize_rates()
 
-from decimal import Decimal
+from decimal import Decimal, getcontext
 GWEI_DENOMINATOR = Decimal(1000000000.0)
+csv_format = lambda x: "%.6f" % x
 
 BLOCK_TIMESTAMP_TIMEZONE = pytz.timezone("UTC")
 
@@ -80,8 +81,6 @@ for block, transaction in transactions:
         rate = -1
         gas_price_usd = -1
         value_usd = -1
-    print(transaction['status'])
-    sys.exit(0)
     balance = "N/A"
     if transaction['to'] == main_account:
         fifo_values[transaction['hash']] = ("+", timestamp_datetime, timestamp_date, value, gas_price_eth, rate)

@@ -14,8 +14,8 @@ GWEI_DENOMINATOR = Decimal(1000000000.0)
 BLOCK_TIMESTAMP_TIMEZONE = pytz.timezone("UTC")
 
 main_account = ''
-receivers = []
-receivers_data = {}
+receivers = ['all']
+receivers_data = {'all':[]}
 
 accounting_timezone = pytz.timezone("CET")
 year = 1970
@@ -44,11 +44,24 @@ start = time.mktime(start.timetuple())
 end = time.mktime(end.timetuple())
 #print(start, end)
 
+from collections import OrderedDict
+
+fifo_values = OrderedDict()
+
+def calculate_balance(values, hash=None):
+    balance = Decimal(0.0)
+    for hash, transaction in values.items():
+        if transaction[0] == '+':
+            balance += transaction[3]
+        elif transaction[0] == '-':
+            balance -= transaction[3]
+            balance -= transaction[4]
+    return balance
+
 for block, transaction in transactions:
     if not main_account:
         main_account = transaction['to']
     timestamp = blocks[str(block)]['timestamp']
-    if timestamp < start or timestamp > end: continue
     to = transaction['to']
     if not to in receivers:
         receivers.append(to)
@@ -67,14 +80,26 @@ for block, transaction in transactions:
         rate = -1
         gas_price_usd = -1
         value_usd = -1
-    receivers_data[to].append((transaction['from'], transaction['to'], transaction['hash'], value,
-				value_usd, gas_price_eth, gas_price_usd, gas_price_gwei, block,
-				timestamp, timestamp_date, timestamp_time, rate))
+    print(transaction['status'])
+    sys.exit(0)
+    balance = "N/A"
+    if transaction['to'] == main_account:
+        fifo_values[transaction['hash']] = ("+", timestamp_datetime, timestamp_date, value, gas_price_eth, rate)
+    elif transaction['from'] == main_account:
+        fifo_values[transaction['hash']] = ("-", timestamp_datetime, timestamp_date, value, gas_price_eth, rate)
+    balance = calculate_balance(fifo_values)
+    if timestamp < start or timestamp > end: continue
+    data = (transaction['from'], transaction['to'], transaction['hash'], value,
+		value_usd, gas_price_eth, gas_price_usd, gas_price_gwei, block,
+		timestamp, timestamp_date, timestamp_time, rate, balance)
+    receivers_data[to].append(data)
+    receivers_data['all'].append(data)
 
 for receiver in receivers:
     file = open(receiver+'.csv', 'w')
     file.write(','.join(("From", "To", "Hash", "Value", "Value USD", "GAS Price ETH", "Gas price USD", "GAS Price Gwei", "Block",
-			"Timestamp", "Timestamp date", "Timestamp time", "Exchange rate")) + "\n")
+			"Timestamp", "Timestamp date", "Timestamp time", "Exchange rate", "Balance")) + "\n")
     for transaction in receivers_data[receiver]:
         file.write(','.join(map(str, transaction)) + '\n')
     file.close()
+

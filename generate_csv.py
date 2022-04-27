@@ -24,10 +24,21 @@ value_data = OrderedDict()
 accounting_timezone = pytz.timezone("CET")
 year = 1970
 
+ignore_hashes = ()
+
 try:
     year = int(sys.argv[1])
 except IndexError:
     pass
+
+try:
+    # Hashes for failed transactions, ignore value, include fee
+    ignore_hashes = tuple(sys.argv[2].split(","))
+except IndexError:
+    pass
+
+
+
 
 if year == 1970:
     start = datetime.datetime(year, 1, 1,
@@ -65,7 +76,8 @@ def calculate_balance(values, hash=None):
         if transaction[0] == '+':
             balance += transaction[3]
         elif transaction[0] == '-':
-            balance -= transaction[3]
+            if not hash in ignore_hashes:
+                balance -= transaction[3]
             balance -= transaction[4]
     return balance
 
@@ -76,9 +88,13 @@ def calculate_usd_value(values, hash=None):
         if transaction[0] == '+':
             balance += transaction[3]
         elif transaction[0] == '-':
-            balance -= transaction[3]
+            if not hash in ignore_hashes:
+                balance -= transaction[3]
             balance -= transaction[4]
-            total = transaction[3] + transaction[4]
+            total = ZERO
+            if not hash in ignore_hashes:
+                total += transaction[3]
+            total += transaction[4]
             transaction_new = None
             for hash_, transaction_ in copy.items():
                 if transaction_[3] >= ZERO:

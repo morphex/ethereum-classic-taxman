@@ -50,3 +50,15 @@ about web development, system administration etc.
 
 morphex@gmail.com is my email address.
 
+Special notes:
+
+  ./generate_csv.py year hash1,hash2,hash3
+
+will ignore the value of the specified transactions; this is
+implemented due to a bug in geth (go-ethereum) where
+TransactionNotFound is raised for a transaction that does exist,
+making it impossible to discern whether a transaction has succeeded or
+not.
+
+See https://github.com/ethereum/go-ethereum/issues/24768 for more
+information.

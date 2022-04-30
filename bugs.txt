@@ -2,5 +2,6 @@ Running run.py with a block not yet present on the local node gives an
 IndexError.
 
 Failed transactions aren't detected, meaning the failed value AND gas fee are
-deducted from the source account.
+deducted from the source account. A workaround is specifying the failed
+transaction hashes on the command line, see readme.
 

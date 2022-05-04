@@ -17,8 +17,8 @@ csv_format = lambda x: "%.6f" % x
 BLOCK_TIMESTAMP_TIMEZONE = pytz.timezone("UTC")
 
 main_account = ''
-receivers = ['all']
-receivers_data = {'all':[]}
+receivers = [] #receivers = ['all']
+receivers_data = {} #receivers_data = {'all':[]}
 value_data = OrderedDict()
 
 accounting_timezone = pytz.timezone("CET")
@@ -152,7 +152,9 @@ for block, transaction in transactions:
 		value_usd, gas_price_eth, gas_price_usd, gas_price_gwei, block,
 		timestamp, timestamp_date, timestamp_time, rate, balance, balance_usd)
     receivers_data[to].append(data)
-    receivers_data['all'].append(data)
+    if transaction['from'] == main_account:
+        receivers_data[main_account].append(data)
+#    receivers_data['all'].append(data)
 
 for receiver in receivers:
     file = open(receiver+'.csv', 'w')

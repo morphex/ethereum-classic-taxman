@@ -2,12 +2,14 @@
 
 import sys
 import datetime, time, pytz
-from database import initialize_transactions, initialize_blocks, initialize_rates
+from database import initialize_transactions, initialize_blocks, initialize_rates, initialize_rates_fiat
 from collections import OrderedDict
+from utilities import warning
 
 index, transactions = initialize_transactions()
 numbers, blocks = initialize_blocks()
 rates = initialize_rates()
+rates_fiat = initialize_rates_fiat()
 
 from decimal import Decimal, getcontext
 GWEI_DENOMINATOR = Decimal(1000000000.0)
@@ -118,6 +120,24 @@ def calculate_usd_value(values, hash=None):
         print("Warning, balance below zero")
     return balance, copy
 
+def get_fiat_rate(date, recurse=0):
+    """Returns the fiat USD-Currency rate for a given date.
+
+    If a rate isn't specified for that date, return the rate for the
+    first previous rate available."""
+    if not rates_fiat:
+        return Decimal(-1)
+    try:
+        return Decimal(rates_fiat[date])
+    except KeyError:
+        if recurse > 5:
+            warning("Exceeding 5 recursions for %s" % date)
+            return Decimal(-1)
+        recurse += 1
+        year, month, date = map(int, date.split("-"))
+        date = datetime.datetime(year, month, date, hour=0, minute=0) - datetime.timedelta(days=1)
+        return get_fiat_rate("%02d-%02d-%02d" % (date.year, date.month, date.day), recurse=recurse)
+
 for block, transaction in transactions:
     if not main_account:
         main_account = transaction['to']
@@ -136,10 +156,19 @@ for block, transaction in transactions:
         rate = Decimal(rates[timestamp_date][0])
         gas_price_usd = gas_price_eth * rate
         value_usd = value * rate
+        try:
+            rate_fiat = get_fiat_rate(timestamp_date)
+            rate_fiat_converted = rate_fiat * value_usd
+        except KeyError:
+            print("KeyError", timestamp_date)
+            rate_fiat = -1
+            rate_fiat_converted = -1
     except KeyError:
         rate = -1
         gas_price_usd = -1
         value_usd = -1
+        rate_fiat = -1
+        rate_fiat_converted = -1
     balance = "N/A"
     if transaction['to'] == main_account:
         fifo_values[transaction['hash']] = ("+", timestamp_datetime, timestamp_date, value, gas_price_eth, rate)
@@ -150,7 +179,7 @@ for block, transaction in transactions:
     if timestamp < start or timestamp > end: continue
     data = (transaction['from'], transaction['to'], transaction['hash'], value,
 		value_usd, gas_price_eth, gas_price_usd, gas_price_gwei, block,
-		timestamp, timestamp_date, timestamp_time, rate, balance, balance_usd)
+		timestamp, timestamp_date, timestamp_time, rate, balance, balance_usd, rate_fiat_converted, rate_fiat)
     receivers_data[to].append(data)
     if transaction['from'] == main_account:
         receivers_data[main_account].append(data)
@@ -158,8 +187,8 @@ for block, transaction in transactions:
 
 for receiver in receivers:
     file = open(receiver+'.csv', 'w')
-    file.write(','.join(("From", "To", "Hash", "Value", "Value USD", "GAS Price ETH", "Gas price USD", "GAS Price Gwei", "Block",
-			"Timestamp", "Timestamp date", "Timestamp time", "Exchange rate", "Balance", "Balance USD")) + "\n")
+    file.write(','.join(("From", "To", "Hash", "Value", "Value USD", "GAS Price ETH/ETC", "Gas price USD", "GAS Price Gwei", "Block",
+			"Timestamp", "Timestamp date", "Timestamp time", "Exchange rate", "Balance", "Balance USD", "Value fiat", "Fiat rate")) + "\n")
     for transaction in receivers_data[receiver]:
         file.write(','.join(map(str, transaction)) + '\n')
     file.close()

@@ -10,6 +10,7 @@ from web3._utils.encoding import Web3JsonEncoder as jsonencoder
 transactions_database = "transactions.json"
 blocks_database = "blocks.json"
 rates_database = "rates.json"
+rates_fiat_database = "rates_fiat.json"
 
 data_backups_dir = "./data_backups/"
 temporary_extension = ".tmp"
@@ -114,3 +115,33 @@ def save_rates(rates):
         file.write(json.dumps(rates, cls=jsonencoder))
     os.rename(rates_database, data_backups_dir + rates_database + "." + str(time.time()) + old_extension)
     os.rename(rates_database + temporary_extension, rates_database)
+
+rates_fiat = {}
+
+def _create_rates_fiat_database():
+    global rates_fiat
+    with open(rates_fiat_database, "x") as file:
+        file.write(json.dumps(rates_fiat, cls=jsonencoder))
+
+def initialize_rates_fiat():
+    try:
+        f = open(rates_fiat_database, "r")
+        rates_fiat = json.loads(f.read())
+        #for key, value in rates_fiat.items():
+        #    rates_fiat[key] = tuple(map(float, value))
+        return rates_fiat
+    except FileNotFoundError:
+        _create_rates_fiat_database()
+        return initialize_rates_fiat()
+    except Exception as exception:
+        print("Uknown error in initialization of rates_fiat database")
+        dump_exception(exception)
+        raise
+
+def save_rates_fiat(rates_fiat):
+    print("Saving rates_fiat..")
+    # FIXME, rename before save
+    with open(rates_fiat_database + temporary_extension, "w") as file:
+        file.write(json.dumps(rates_fiat, cls=jsonencoder))
+    os.rename(rates_fiat_database, data_backups_dir + rates_fiat_database + "." + str(time.time()) + old_extension)
+    os.rename(rates_fiat_database + temporary_extension, rates_fiat_database)

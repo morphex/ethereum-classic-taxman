@@ -9,3 +9,6 @@ def dump_exception(exception):
         traceback.print_last()
     except:
         print("Exception during printing of exception")
+
+def warning(message):
+    print("Warning: ", message)

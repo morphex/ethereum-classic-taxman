@@ -2,6 +2,7 @@
 
 import csv
 import database
+import sys
 
 # This is a configuration for a CSV file containing the high and low
 # points of a cryptocurrency for a given day, in this way
@@ -31,7 +32,12 @@ else:
 
 rates = database.initialize_rates()
 
-for row in list(csv.reader(open("../ETH-USD.csv")))[start:]:
+try:
+    datafile = sys.argv[1]
+except IndexError:
+    datafile = "../ETC-USD.csv"
+
+for row in list(csv.reader(open(datafile)))[start:]:
     date = row[date_index]
     high = float(row[high_index])
     low = float(row[low_index])

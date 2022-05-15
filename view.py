@@ -2,6 +2,17 @@
 
 import pprint, sys, json
 
+# Little tool for viewing JSON data / making it easier to edit.
+#
+# For example
+#
+# ./view.py transactions.json | less
+#
+# or
+#
+# ./view.py transactions.json > transactions_edit.json
+# nano transactions_edit.json
+
 pp = pprint.PrettyPrinter()
 
 try:
